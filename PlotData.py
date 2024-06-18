@@ -2,7 +2,7 @@ import socketio
 
 class PlotData:
     
-    SERVER_URL = "http://localhost:3000"
+    SERVER_URL = "https://plot-server-vyls.onrender.com"
     
     def __init__(self):
         self.sio = socketio.Client()
