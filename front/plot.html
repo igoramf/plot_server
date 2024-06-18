@@ -31,7 +31,7 @@
         createCharts();
         loadDataFromLocalStorage();
 
-        const socket = io('http://localhost:3000');
+        const socket = io('https://plot-server-vyls.onrender.com');
         socket.on('update_chart', (data) => {
           const { train_acc, val_acc, loss, val_loss, max_epochs, id } = data;
           
