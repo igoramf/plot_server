@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Training Plots</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Training Plots</h1>
+      <div class="subtitle">
+        <h1 id="max_epochs"></h1>
+      </div>
+      <div class="canvas-container">
+        <div class="chart-wrapper">
+          <canvas id="chart0"></canvas>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="chart1"></canvas>
+        </div>
+      </div>
+    </div>
+    </body>
+    <script type="text/javascript" src="plot.js"></script>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script>
+      window.onload = function() {
+        createCharts();
+        loadDataFromLocalStorage();
+
+        const socket = io('http://localhost:3000');
+        socket.on('update_chart', (data) => {
+          const { train_acc, val_acc, loss, val_loss, max_epochs, id } = data;
+          
+          if (id != get_plot_id()){
+            ClearData()
+          }
+          updateLabels(max_epochs);
+          save_metadata(max_epochs, id);
+
+          uc(train_acc, val_acc, loss, val_loss);
+     
+          const epoch = window.charts[0].data.datasets[0].data.length;
+          if (epoch === max_epochs + 1) {
+              console.log('Training finished');
+              ClearData()
+          }
+        });
+    };
+    </script>
+</html>

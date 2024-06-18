@@ -1,0 +1,31 @@
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.canvas-container {
+    display: flex;
+    justify-content: space-between;
+    width: 810px;
+}
+
+.chart-wrapper {
+    width: 400px;
+    height: 300px;
+}
+
+canvas {
+    background-color: white;
+}
+
+.subtitle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 10px;
+}
