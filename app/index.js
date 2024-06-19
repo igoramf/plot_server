@@ -36,10 +36,9 @@ app.get('/page/:id', (req, res) => {
 io.on('connection', (socket) => {
     console.log('Novo cliente conectado');
     socket.on('training_data', (data) => {
-        console.log('Dados de treinamento recebidos:', data);
-        if (data.id) {
-            io.emit('update_chart', { data });
-        }
+        // console.log('Dados de treinamento recebidos:', data);
+        io.emit('update_chart', data );
+       
     });
 
     socket.on('send_plots', (data) => {

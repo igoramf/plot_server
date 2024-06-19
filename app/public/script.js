@@ -22,13 +22,10 @@ function uc(acc, val_acc, loss, val_loss) {
     saveDataToLocalStorage();
 }
 
-function save_metadata(max_epochs, id) {
-    localStorage.setItem('max_epochs', max_epochs);
-    localStorage.setItem('id', id);
-}
-
 function get_plot_id(){
-    return localStorage.getItem("id");
+    loc = window.location.href
+    id = loc.split("/").pop()
+    return id
 }
 
 function dataURLToBinary(dataURL) {
