@@ -9,6 +9,7 @@ class PlotData:
     def __init__(self):
         self.sio = socketio.Client()
         self.id = None
+        self.url = None
         
         @self.sio.event
         def connect():
@@ -49,6 +50,7 @@ class PlotData:
             response = requests.get(self.SERVER_URL + 'get-id')
             if response.status_code == 200:
                 self.id = response.json()['id']
+                self.url = response.json()['url']
                 print(f"ID recebido do servidor: {self.id}")
                 self.sio.emit('join_room', self.id)
             else:

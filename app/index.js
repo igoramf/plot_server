@@ -33,6 +33,17 @@ app.get('/page/:id', (req, res) => {
     }
 });
 
+app.delete('/delete-room/:id', (req, res) => {
+    const id = req.params.id;
+    const index = validIds.indexOf(id);
+    if (index !== -1) {
+        validIds.splice(index, 1);
+        io.of('/').in(id).disconnectSockets()
+        res.status(200).json({ message: `ID ${id} deleted successfully` });
+    } else {
+        res.status(404).json({ error: `ID ${id} not found` });
+    }
+});
 
 io.on('connection', (socket) => {
     console.log('Novo cliente conectado');
@@ -60,8 +71,7 @@ io.on('connection', (socket) => {
 });
 
 console.log("CORS", process.env.CORS_ORIGIN)
-url = `http://localhost:${process.env.PORT}`;
 
 server.listen(process.env.PORT || 3000, () => {
-    console.log(`server running at http://localhost:${process.env.PORT}`);
+    console.log(`server running at ${process.env.PORT}`);
 });

@@ -187,3 +187,18 @@ function ClearData() {
     window.charts[1].update();
     updateLabels(0)
 }
+
+const deleteRoom = async (id) => {
+    try {
+        const response = await fetch(`/delete-room/${id}`, { method: 'DELETE' });
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data.message);
+        } else {
+            const errorData = await response.json();
+            console.error(errorData.error);
+        }
+    } catch (error) {
+        console.error('Error deleting room:', error);
+    }
+};

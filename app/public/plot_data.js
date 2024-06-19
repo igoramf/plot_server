@@ -21,6 +21,7 @@ window.onload = function() {
           console.log('Training finished');
           emitPlots(socket);
           ClearData()
+          deleteRoom(id);
       }
     });
 };
