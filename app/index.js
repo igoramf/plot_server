@@ -12,7 +12,7 @@ const io = new Server(server, { cors: { origin: process.env.CORS_ORIGIN } });
 let validIds = [];
 
 app.get('/', (req, res) => {
-    res.send('<h1>Hello PropertyExtractor</h1>');
+    res.send('<h1>Hello Property Extractor</h1>');
 });
 
 app.use(express.static(__dirname + '/public'));
@@ -28,17 +28,18 @@ app.get('/page/:id', (req, res) => {
     if (validIds.includes(id)) {
         res.sendFile(__dirname + '/public/index.html');
     } else {
-        res.status(404).send('ID not found');
+        res.status(404).send('<h1>ID not found</h1>');
     }
 });
 
 
 io.on('connection', (socket) => {
     console.log('Novo cliente conectado');
-    const uniqueId = uuidv4();
     socket.on('training_data', (data) => {
-        // console.log('Dados de treinamento recebidos:', data);
-        io.emit('update_chart', { id: uniqueId, ...data });
+        console.log('Dados de treinamento recebidos:', data);
+        if (data.id) {
+            io.emit('update_chart', { data });
+        }
     });
 
     socket.on('send_plots', (data) => {

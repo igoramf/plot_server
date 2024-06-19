@@ -1,4 +1,5 @@
 import socketio
+import requests
 
 class PlotData:
     
@@ -7,10 +8,12 @@ class PlotData:
     
     def __init__(self):
         self.sio = socketio.Client()
+        self.id = None
         
         @self.sio.event
         def connect():
             print('Conectado ao servidor')
+            self.__get_id_from_server()
             
         @self.sio.event
         def disconnect():
@@ -35,10 +38,22 @@ class PlotData:
             'val_acc': val_acc,
             'loss': loss,
             'val_loss': val_loss,
-            'max_epochs': max_epochs
+            'max_epochs': max_epochs,
+            'id': self.id
         }
         self.sio.emit('training_data', data)
         # print(f'Dados enviados: train_acc={train_acc}, val_acc={val_acc}, loss={loss}, val_loss={val_loss}, max_epochs={max_epochs}')
+    
+    def __get_id_from_server(self):
+        try:
+            response = requests.get(self.SERVER_URL + 'get-id')
+            if response.status_code == 200:
+                self.id = response.json()['id']
+                print(f"ID recebido do servidor: {self.id}")
+            else:
+                print(f"Falha ao obter ID: {response.status_code}")
+        except requests.exceptions.RequestException as e:
+            print(f"Erro ao fazer requisição para obter ID: {e}")
     
     def save_images(self, image_data):
         acc_plot = image_data['accPlot']
