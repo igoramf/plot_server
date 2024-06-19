@@ -35,15 +35,24 @@ app.get('/page/:id', (req, res) => {
 
 io.on('connection', (socket) => {
     console.log('Novo cliente conectado');
+    
+    socket.on('join_room', (roomId) => {
+        if (validIds.includes(roomId)) {
+            socket.join(roomId);
+            console.log(`Cliente entrou na sala ${roomId}`);
+        } else {
+            console.log(`Tentativa de entrar em sala inválida: ${roomId}`);
+        }
+    });
+    
     socket.on('training_data', (data) => {
-        // console.log('Dados de treinamento recebidos:', data);
-        io.emit('update_chart', data );
-       
+        if (data.id){
+            io.to(data.id).emit('update_chart', data );
+        }
     });
 
     socket.on('send_plots', (data) => {
         const { accPlot, lossPlot } = data;
-
         socket.emit('image_data', { accPlot, lossPlot });
     });
 

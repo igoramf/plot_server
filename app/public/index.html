@@ -33,12 +33,13 @@
 
         // const socket = io('https://plot-server-vyls.onrender.com');
         const socket = io('http://localhost:3000');
+          socket.on('connect', () => {
+            const roomId = get_plot_id(); 
+            socket.emit('join_room', roomId);
+        });
+
         socket.on('update_chart', (data) => {
           const { train_acc, val_acc, loss, val_loss, max_epochs, id } = data;
-          
-          if (id != get_plot_id()){
-            return;
-          }
 
           updateLabels(max_epochs);
 

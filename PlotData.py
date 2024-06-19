@@ -50,6 +50,7 @@ class PlotData:
             if response.status_code == 200:
                 self.id = response.json()['id']
                 print(f"ID recebido do servidor: {self.id}")
+                self.sio.emit('join_room', self.id)
             else:
                 print(f"Falha ao obter ID: {response.status_code}")
         except requests.exceptions.RequestException as e:
@@ -59,4 +60,3 @@ class PlotData:
         acc_plot = image_data['accPlot']
         loss_plot = image_data['lossPlot']
         print("RECEBI TUDO")
-        print(acc_plot)
