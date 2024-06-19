@@ -17,9 +17,16 @@ io.on('connection', (socket) => {
     console.log('Novo cliente conectado');
     const uniqueId = uuidv4();
     socket.on('training_data', (data) => {
-        console.log('Dados de treinamento recebidos:', data);
+        // console.log('Dados de treinamento recebidos:', data);
         io.emit('update_chart', { id: uniqueId, ...data });
     });
+
+    socket.on('send_plots', (data) => {
+        const { accPlot, lossPlot } = data;
+
+        socket.emit('image_data', { accPlot, lossPlot});
+    });
+
 });
 
 console.log("CORS", process.env.CORS_ORIGIN )

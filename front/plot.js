@@ -55,6 +55,18 @@ function canvasIdToPngBin(canvasId) {
     return canvas.toDataURL("image/png");
 }
 
+function plotsFile(){
+    pngBinaryAcc = canvasIdToPngBin("chart0");
+    pngBinaryLoss = canvasIdToPngBin("chart1");
+    return {"accPlot": pngBinaryAcc, "lossPlot": pngBinaryLoss};   
+}
+
+function emitPlots(socket) {
+    const plots = plotsFile();
+    socket.emit('send_plots', plots);
+}
+
+
 const chartLabels = [
     ["train acc", "eval acc"],
     ["train loss", "eval loss"],
