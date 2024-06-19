@@ -63,11 +63,6 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('send_plots', (data) => {
-        const { accPlot, lossPlot } = data;
-        socket.emit('image_data', { accPlot, lossPlot });
-    });
-
 });
 
 server.listen(process.env.PORT || 3000, () => {

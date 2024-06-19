@@ -15,8 +15,6 @@ while True:
     train_loss = random.random()
     
     
-
-    # https://plot-server-r7sc-2l6vbwsrs-igoramfs-projects.vercel.app/
     
     plot_data_client.call(train_acc, val_acc, loss, train_loss, 10)
     print(plot_data_client.url)
