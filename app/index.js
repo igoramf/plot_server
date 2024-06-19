@@ -20,7 +20,8 @@ app.use(express.static(__dirname + '/public'));
 app.get('/get-id', (req, res) => {
     const uniqueId = uuidv4();
     validIds.push(uniqueId);
-    res.json({ id: uniqueId });
+    const url = `${req.protocol}://${req.get('host')}/page/${uniqueId}`;
+    res.json({ id: uniqueId, url });
 });
 
 app.get('/page/:id', (req, res) => {
