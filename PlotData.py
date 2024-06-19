@@ -3,8 +3,8 @@ import requests
 
 class PlotData:
     
-    # SERVER_URL = "https://plot-server-vyls.onrender.com"
-    SERVER_URL = "http://localhost:3000/"
+    SERVER_URL = "https://plot-server-taio.onrender.com/"
+    # SERVER_URL = "http://localhost:3000/"
     
     def __init__(self):
         self.sio = socketio.Client()
