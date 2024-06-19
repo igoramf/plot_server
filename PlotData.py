@@ -3,13 +3,17 @@ import requests
 
 class PlotData:
     
-    SERVER_URL = "https://plot-server-taio.onrender.com/"
-    # SERVER_URL = "http://localhost:3000/"
+    # SERVER_URL = "https://plot-server-taio.onrender.com/"
+    SERVER_URL = "http://localhost:3000/"
     
     def __init__(self):
         self.sio = socketio.Client()
         self.id = None
         self.url = None
+        self.train_acc = []
+        self.val_acc = []
+        self.loss = []
+        self.val_loss = []
         
         @self.sio.event
         def connect():
@@ -19,26 +23,25 @@ class PlotData:
         @self.sio.event
         def disconnect():
             print('Desconectado do servidor')
-        
-        @self.sio.on('image_data')
-        def on_image_data(data):
-            print('Imagens recebidas e salvas')
-            self.save_images(data)
             
     def call(self, train_acc, val_acc, loss, val_loss, max_epochs):
-        self.__connect()
         self.__send_data(train_acc, val_acc, loss, val_loss, max_epochs)
         
-    def __connect(self):
+    def connect(self):
         if not self.sio.connected:
             self.sio.connect(self.SERVER_URL)
+    
+    def __send_data(self, train_acc_value, val_acc_value, loss_value, val_loss_value, max_epochs):
+        self.train_acc.append(train_acc_value)
+        self.val_acc.append(val_acc_value)
+        self.loss.append(loss_value)
+        self.val_loss.append(val_loss_value)
         
-    def __send_data(self, train_acc, val_acc, loss, val_loss, max_epochs):
         data = {
-            'train_acc': train_acc,
-            'val_acc': val_acc,
-            'loss': loss,
-            'val_loss': val_loss,
+            'train_acc': self.train_acc,
+            'val_acc': self.val_acc,
+            'loss': self.loss,
+            'val_loss': self.val_loss,
             'max_epochs': max_epochs,
             'id': self.id
         }
@@ -57,8 +60,3 @@ class PlotData:
                 print(f"Falha ao obter ID: {response.status_code}")
         except requests.exceptions.RequestException as e:
             print(f"Erro ao fazer requisição para obter ID: {e}")
-    
-    def save_images(self, image_data):
-        acc_plot = image_data['accPlot']
-        loss_plot = image_data['lossPlot']
-        print("RECEBI TUDO")

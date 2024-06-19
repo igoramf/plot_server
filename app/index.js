@@ -70,8 +70,6 @@ io.on('connection', (socket) => {
 
 });
 
-console.log("CORS", process.env.CORS_ORIGIN)
-
 server.listen(process.env.PORT || 3000, () => {
     console.log(`server running at ${process.env.PORT}`);
 });

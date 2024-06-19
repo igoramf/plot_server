@@ -1,25 +1,12 @@
-function saveDataToLocalStorage() {
-    const accData = window.charts[0].data.datasets[0].data;
-    const valAccData = window.charts[0].data.datasets[1].data;
-    const lossData = window.charts[1].data.datasets[0].data;
-    const valLossData = window.charts[1].data.datasets[1].data;
-
-    localStorage.setItem('accData', accData);
-    localStorage.setItem('valAccData', valAccData);
-    localStorage.setItem('lossData', lossData);
-    localStorage.setItem('valLossData', valLossData);
-}
 
 // update chart
 function uc(acc, val_acc, loss, val_loss) {
-    window.charts[0].data.datasets[0].data.push(acc);
-    window.charts[0].data.datasets[1].data.push(val_acc);
+    window.charts[0].data.datasets[0].data = acc
+    window.charts[0].data.datasets[1].data = val_acc
     window.charts[0].update();
-    window.charts[1].data.datasets[0].data.push(loss);
-    window.charts[1].data.datasets[1].data.push(val_loss);
+    window.charts[1].data.datasets[0].data = loss
+    window.charts[1].data.datasets[1].data = val_loss
     window.charts[1].update();
-
-    saveDataToLocalStorage();
 }
 
 function get_plot_id(){
@@ -57,12 +44,6 @@ function plotsFile(){
     pngBinaryLoss = canvasIdToPngBin("chart1");
     return {"accPlot": pngBinaryAcc, "lossPlot": pngBinaryLoss};   
 }
-
-function emitPlots(socket) {
-    const plots = plotsFile();
-    socket.emit('send_plots', plots);
-}
-
 
 const chartLabels = [
     ["train acc", "eval acc"],
@@ -157,24 +138,6 @@ function updateLabels(max_epochs){
     window.charts[1].data.labels = Array.from({ length: max_epochs }, (_, i) => i + 1)
 }
 
-function loadDataFromLocalStorage() {
-
-    const accData = localStorage.getItem('accData')?.split(",") || [];
-    const valAccData = localStorage.getItem('valAccData')?.split(",") || [];
-    const lossData = localStorage.getItem('lossData')?.split(",") || [];
-    const valLossData = localStorage.getItem('valLossData')?.split(",") || [];
-    const max_epochs = localStorage.getItem('max_epochs') || 100;
-
-
-    window.charts[0].data.datasets[0].data = accData;
-    window.charts[0].data.datasets[1].data = valAccData;
-    window.charts[1].data.datasets[0].data = lossData;
-    window.charts[1].data.datasets[1].data = valLossData;
-    updateLabels(max_epochs);
-
-    window.charts[0].update();
-    window.charts[1].update();
-}
 
 function ClearData() {
     localStorage.clear();
