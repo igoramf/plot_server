@@ -50,8 +50,8 @@ class PlotData:
     
     def __get_id_from_server(self):
         try:
-            response = requests.get(self.SERVER_URL + 'get-id')
-            if response.status_code == 200:
+            response = requests.post(self.SERVER_URL + 'create-plot')
+            if response.status_code == 201:
                 self.id = response.json()['id']
                 self.url = response.json()['url']
                 print(f"ID recebido do servidor: {self.id}")

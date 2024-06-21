@@ -1,8 +1,8 @@
 window.onload = function() {
     createCharts();
 
-    const socket = io('https://plot-server-taio.onrender.com/');
-    // const socket = io('http://localhost:3000');
+    // const socket = io('https://plot-server-taio.onrender.com/');
+    const socket = io('http://localhost:3000');
       socket.on('connect', () => {
         const roomId = get_plot_id(); 
         socket.emit('join_room', roomId);
