@@ -20,8 +20,9 @@ async function generateChart(chartNo, max_epochs, data) {
         ChartJS.defaults.font.family = 'Arial';
         ChartJS.defaults.font.size = 10;
     };
-
-    const chartNode = new ChartJSNodeCanvas({ width, height, chartCallback, backgroundColor: '#ffffff' });
+    
+    const backgroundColour = 'white';
+    const chartNode = new ChartJSNodeCanvas({ width, height, chartCallback, backgroundColour });
 
     const configuration = {
         type: 'line',
