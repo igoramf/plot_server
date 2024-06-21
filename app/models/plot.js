@@ -3,16 +3,13 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const plotSchema = new Schema({
-  plotId: {
+  plot_acc: {
     type: String,
-    required: true,
-    unique: true
+    default: ""
   },
-  plotAcc: {
+  plot_loss: {
     type: String,
-  },
-  plotLoss: {
-    type: String,
+    default: ""
   },
   train_acc: {
     type: [Number],

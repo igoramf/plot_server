@@ -24,6 +24,7 @@ window.onload = async function() {
 
       updateLabels(max_epochs);
       uc(train_acc, val_acc, loss, val_loss);
+      sendPlotsToServer(id)
  
       const epoch = window.charts[0].data.datasets[0].data.length;
       if (epoch === max_epochs + 1) {

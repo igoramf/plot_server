@@ -12,6 +12,7 @@ const server = createServer(app);
 const io = new Server(server, { cors: { origin: process.env.CORS_ORIGIN } });
 
 app.use(dbMiddleware);
+app.use(express.json());
 
 app.get('/', (req, res) => {
     res.send('<h1>Hello Property Extractor</h1>');
@@ -20,23 +21,22 @@ app.get('/', (req, res) => {
 app.use(express.static(__dirname + '/public'));
 
 app.post('/create-plot', async (req, res) => {
-    const plotId = uuidv4();
-    plotAcc = null
-    plotLoss = null
+
     try {
-        const newPlot = new Plot({ plotId, plotAcc, plotLoss });
+        const newPlot = new Plot();
         await newPlot.save();
-        const url = `${req.protocol}://${req.get('host')}/plot/${plotId}`;
-        res.status(201).json({ id: plotId, url });
-      } catch (error) {
-        res.status(500).json({ error: 'Erro ao criar o plot' });
+        const url = `${req.protocol}://${req.get('host')}/plot/${newPlot._id}`;
+        res.status(201).json({ id: newPlot._id, url });
+        } catch (error) {
+          console.log(error)
+          res.status(500).json({ error: 'Erro ao criar o plot' });
       }
 });
 
 app.get('/plot/:id', async(req, res) => {
     const id = req.params.id;
     try {
-      const plot = await Plot.findOne({ plotId: id });
+      const plot = await Plot.findById(id);
       if (plot) {
         res.sendFile(__dirname + '/public/index.html');
       } else {
@@ -50,7 +50,7 @@ app.get('/plot/:id', async(req, res) => {
 app.get('/plot/data/:id', async (req, res) => { 
     const id = req.params.id;
     try {
-      const plot = await Plot.findOne({ plotId: id });
+      const plot = await Plot.findById(id);
       if (plot) {
         res.status(200).json(plot)
       } else {
@@ -63,12 +63,12 @@ app.get('/plot/data/:id', async (req, res) => {
 
 app.put('/update-plot/:id', async (req, res) => {
     const id = req.params.id;
-    const { plotAcc, plotLoss } = req.body;
+    const { plot_acc, plot_loss } = req.body;
   
     try {
-      const plot = await Plot.findOneAndUpdate(
-        { plotId: id },
-        { $set: { plotAcc, plotLoss } },
+      const plot = await Plot.findByIdAndUpdate(
+        id,
+        { $set: { plot_acc, plot_loss } },
         { new: true }
       );
   
@@ -86,7 +86,7 @@ app.delete('/delete-room/:id', async (req, res) => {
     const id = req.params.id;
 
     try {
-      const plot = await Plot.findOne({ plotId: id });
+      const plot = await Plot.findById(id);
       if (plot) {
         await plot.remove();
         io.of('/').in(id).disconnectSockets();
@@ -104,7 +104,7 @@ io.on('connection', (socket) => {
     
     socket.on('join_room', async (roomId) => {
         try {
-            const plot = await Plot.findOne({ plotId: roomId });
+            const plot = await Plot.findById(roomId);
             if (plot) {
               socket.join(roomId);
               console.log(`Cliente entrou na sala ${roomId}`);
@@ -118,7 +118,7 @@ io.on('connection', (socket) => {
     
     socket.on('training_data', async (data) => {
         if (data.id){
-            const plot = await Plot.findOne({ plotId: data.id });
+            const plot = await Plot.findById(data.id);
             const { train_acc, val_acc, loss, val_loss, max_epochs, id } = data;
             if (plot){
                 plot.train_acc = train_acc;

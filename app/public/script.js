@@ -2,13 +2,15 @@
 // update chart
 function uc(acc, val_acc, loss, val_loss) {
     window.charts[0].data.datasets[0].data = acc
-    console.log(window.charts[0].data.datasets[0].data)
     window.charts[0].data.datasets[1].data = val_acc
     window.charts[0].update();
     window.charts[1].data.datasets[0].data = loss
     window.charts[1].data.datasets[1].data = val_loss
     window.charts[1].update();
+
+    
 }
+
 
 function get_plot_id(){
     loc = window.location.href
@@ -40,10 +42,28 @@ function canvasIdToPngBin(canvasId) {
     return canvas.toDataURL("image/png");
 }
 
-function plotsFile(){
-    pngBinaryAcc = canvasIdToPngBin("chart0");
-    pngBinaryLoss = canvasIdToPngBin("chart1");
-    return {"accPlot": pngBinaryAcc, "lossPlot": pngBinaryLoss};   
+async function sendPlotsToServer(id) {
+    try {
+        const pngBinaryAcc = await canvasIdToPngBin("chart0");
+        const pngBinaryLoss = await canvasIdToPngBin("chart1");
+        
+        const response = await fetch(`/update-plot/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ plot_acc: pngBinaryAcc, plot_loss: pngBinaryLoss })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update plot');
+        }
+
+        const updatedPlot = await response.json();
+        console.log('Plot updated:', updatedPlot);
+    } catch (error) {
+        console.error('Error updating plot:', error);
+    }
 }
 
 const chartLabels = [
@@ -156,7 +176,6 @@ const deleteRoom = async (id) => {
         const response = await fetch(`/delete-room/${id}`, { method: 'DELETE' });
         if (response.ok) {
             const data = await response.json();
-            console.log(data.message);
         } else {
             const errorData = await response.json();
             console.error(errorData.error);
