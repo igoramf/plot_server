@@ -47,7 +47,7 @@ app.get('/plot/:id', async(req, res) => {
     }
 });
 
-app.get('data/plot/:id', async (req, res) => { 
+app.get('/plot/data/:id', async (req, res) => { 
     const id = req.params.id;
     try {
       const plot = await Plot.findOne({ plotId: id });
@@ -121,11 +121,11 @@ io.on('connection', (socket) => {
             const plot = await Plot.findOne({ plotId: data.id });
             const { train_acc, val_acc, loss, val_loss, max_epochs, id } = data;
             if (plot){
-                plot.trainAcc = train_acc;
-                plot.valAcc = val_acc;
+                plot.train_acc = train_acc;
+                plot.val_acc = val_acc;
                 plot.loss = loss;
                 plot.val_loss = val_loss;
-                plot.maxEpochs = max_epochs;
+                plot.max_epochs = max_epochs;
                 await plot.save();
             }
             io.to(data.id).emit('update_chart', data );

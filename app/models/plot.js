@@ -14,11 +14,11 @@ const plotSchema = new Schema({
   plotLoss: {
     type: String,
   },
-  trainAcc: {
+  train_acc: {
     type: [Number],
     default: [],
   },
-  valAcc: {
+  val_acc: {
     type: [Number],
     default: [],
   },
@@ -30,7 +30,7 @@ const plotSchema = new Schema({
     type: [Number],
     default: [],
   },
-  maxEpochs: {
+  max_epochs: {
     type: Number,
   },
 });

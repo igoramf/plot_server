@@ -1,8 +1,19 @@
-window.onload = function() {
-    createCharts();
+url = "http://localhost:3000/" //'https://plot-server-taio.onrender.com/'
+const loadData = async (id) => {
+    const response = await fetch(`${url}plot/data/${id}`);
+    const data = await response.json();
+    return data;
+}
 
-    // const socket = io('https://plot-server-taio.onrender.com/');
-    const socket = io('http://localhost:3000');
+window.onload = async function() {
+    createCharts();
+    await loadData(get_plot_id()).then(data => {
+        const { train_acc, val_acc, loss, val_loss, max_epochs } = data;
+        updateLabels(max_epochs);
+        uc(train_acc, val_acc, loss, val_loss);
+    });
+
+    const socket = io(url);
       socket.on('connect', () => {
         const roomId = get_plot_id(); 
         socket.emit('join_room', roomId);
@@ -18,7 +29,7 @@ window.onload = function() {
       if (epoch === max_epochs + 1) {
           console.log('Training finished');
           ClearData()
-          deleteRoom(id);
+          // deleteRoom(id);
       }
     });
 };

@@ -2,6 +2,7 @@
 // update chart
 function uc(acc, val_acc, loss, val_loss) {
     window.charts[0].data.datasets[0].data = acc
+    console.log(window.charts[0].data.datasets[0].data)
     window.charts[0].data.datasets[1].data = val_acc
     window.charts[0].update();
     window.charts[1].data.datasets[0].data = loss
@@ -137,7 +138,6 @@ function updateLabels(max_epochs){
     window.charts[0].data.labels = Array.from({ length: max_epochs }, (_, i) => i + 1)
     window.charts[1].data.labels = Array.from({ length: max_epochs }, (_, i) => i + 1)
 }
-
 
 function ClearData() {
     localStorage.clear();
