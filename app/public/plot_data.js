@@ -1,4 +1,5 @@
-url = "http://localhost:3000/" //'https://plot-server-taio.onrender.com/'
+// url = "http://localhost:3000/" 
+url = 'https://plot-server-taio.onrender.com/'
 const loadData = async (id) => {
     const response = await fetch(`${url}plot/data/${id}`);
     const data = await response.json();
