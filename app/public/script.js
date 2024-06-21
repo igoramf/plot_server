@@ -8,7 +8,7 @@ function uc(acc, val_acc, loss, val_loss) {
     window.charts[1].data.datasets[1].data = val_loss
     window.charts[1].update();
 
-    
+    sendPlotsToServer(get_plot_id())
 }
 
 
