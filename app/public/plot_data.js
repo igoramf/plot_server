@@ -6,32 +6,31 @@ const loadData = async (id) => {
     return data;
 }
 
-window.onload = async function() {
-    createCharts();
-    await loadData(get_plot_id()).then(data => {
-        const { train_acc, val_acc, loss, val_loss, max_epochs } = data;
-        updateLabels(max_epochs);
-        uc(train_acc, val_acc, loss, val_loss);
-    });
+createCharts();
 
-    const socket = io(url);
-      socket.on('connect', () => {
-        const roomId = get_plot_id(); 
-        socket.emit('join_room', roomId);
-    });
+await loadData(get_plot_id()).then(data => {
+    const { train_acc, val_acc, loss, val_loss, max_epochs } = data;
+    updateLabels(max_epochs);
+    uc(train_acc, val_acc, loss, val_loss);
+});
 
-    socket.on('update_chart', (data) => {
-      const { train_acc, val_acc, loss, val_loss, max_epochs, id } = data;
+const socket = io(url);
+    socket.on('connect', () => {
+    const roomId = get_plot_id(); 
+    socket.emit('join_room', roomId);
+});
 
-      updateLabels(max_epochs);
-      uc(train_acc, val_acc, loss, val_loss);
-      sendPlotsToServer(id)
- 
-      const epoch = window.charts[0].data.datasets[0].data.length;
-      if (epoch === max_epochs + 1) {
-          console.log('Training finished');
-          ClearData()
-          // deleteRoom(id);
-      }
-    });
-};
+socket.on('update_chart', (data) => {
+    const { train_acc, val_acc, loss, val_loss, max_epochs, id } = data;
+
+    updateLabels(max_epochs);
+    uc(train_acc, val_acc, loss, val_loss);
+    sendPlotsToServer(id)
+
+    const epoch = window.charts[0].data.datasets[0].data.length;
+    if (epoch === max_epochs + 1) {
+        console.log('Training finished');
+        ClearData()
+        // deleteRoom(id);
+    }
+});
