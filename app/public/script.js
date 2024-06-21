@@ -7,8 +7,6 @@ function uc(acc, val_acc, loss, val_loss) {
     window.charts[1].data.datasets[0].data = loss
     window.charts[1].data.datasets[1].data = val_loss
     window.charts[1].update();
-
-    sendPlotsToServer(get_plot_id())
 }
 
 
@@ -42,29 +40,6 @@ function canvasIdToPngBin(canvasId) {
     return canvas.toDataURL("image/png");
 }
 
-async function sendPlotsToServer(id) {
-    try {
-        const pngBinaryAcc = await canvasIdToPngBin("chart0");
-        const pngBinaryLoss = await canvasIdToPngBin("chart1");
-        
-        const response = await fetch(`/update-plot/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ plot_acc: pngBinaryAcc, plot_loss: pngBinaryLoss })
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to update plot');
-        }
-
-        const updatedPlot = await response.json();
-        console.log('Plot updated:', updatedPlot);
-    } catch (error) {
-        console.error('Error updating plot:', error);
-    }
-}
 
 const chartLabels = [
     ["train acc", "eval acc"],

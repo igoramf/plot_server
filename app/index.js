@@ -5,6 +5,7 @@ const { v4: uuidv4 } = require('uuid');
 const dotenv = require('dotenv');
 const dbMiddleware  = require('./middlewares/db_middleware.js');
 const Plot = require('./models/plot.js');
+const generate_base64 = require('./lib/generate_base64.js');
 dotenv.config();
 
 const app = express();
@@ -61,27 +62,6 @@ app.get('/plot/data/:id', async (req, res) => {
     }
 });
 
-app.put('/update-plot/:id', async (req, res) => {
-    const id = req.params.id;
-    const { plot_acc, plot_loss } = req.body;
-  
-    try {
-      const plot = await Plot.findByIdAndUpdate(
-        id,
-        { $set: { plot_acc, plot_loss } },
-        { new: true }
-      );
-  
-      if (plot) {
-        res.json(plot);
-      } else {
-        res.status(404).json({ error: 'Plot not found' });
-      }
-    } catch (error) {
-      res.status(500).json({ error: 'Server Error' });
-    }
-});
-
 app.delete('/delete-room/:id', async (req, res) => {
     const id = req.params.id;
 
@@ -126,6 +106,10 @@ io.on('connection', (socket) => {
                 plot.loss = loss;
                 plot.val_loss = val_loss;
                 plot.max_epochs = max_epochs;
+                const pngBinaryAcc = await generate_base64(0, max_epochs, { train_acc, val_acc})
+                const pngBinaryLoss = await generate_base64(0, max_epochs, { loss, val_loss})
+                plot.plot_acc = pngBinaryAcc;
+                plot.plot_loss = pngBinaryLoss;
                 await plot.save();
             }
             io.to(data.id).emit('update_chart', data );
