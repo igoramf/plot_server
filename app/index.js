@@ -99,8 +99,8 @@ io.on('connection', (socket) => {
     socket.on('training_data', async (data) => {
         if (data.id) {
             const { train_acc, val_acc, loss, val_loss, max_epochs, id } = data;
-            const pngBinaryAcc = await generate_base64(0, max_epochs, { train_acc, val_acc });
-            const pngBinaryLoss = await generate_base64(1, max_epochs, { loss, val_loss });
+            const pngBinaryAcc = await generate_base64(0, max_epochs, {train_acc, val_acc});
+            const pngBinaryLoss = await generate_base64(1, max_epochs, {loss, val_loss});
     
             const updateData = {
                 train_acc,

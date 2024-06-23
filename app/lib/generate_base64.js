@@ -24,6 +24,9 @@ async function generateChart(chartNo, max_epochs, data) {
     const backgroundColour = 'white';
     const chartNode = new ChartJSNodeCanvas({ width, height, chartCallback, backgroundColour });
 
+    console.log(chartNo == 0 ? data["train_acc"] : data["loss"])
+
+    console.log(data)
     const configuration = {
         type: 'line',
         data: {
@@ -31,7 +34,7 @@ async function generateChart(chartNo, max_epochs, data) {
             datasets: [
                 {
                     label: chartLabels[chartNo][0],
-                    data: chartNo == 0 ? data["acc"] : data["loss"],
+                    data: chartNo == 0 ? data["train_acc"] : data["loss"],
                     borderColor: 'red',
                     backgroundColor: 'rgba(255, 0, 0, 0.1)',
                     borderWidth: 1,
