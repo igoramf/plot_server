@@ -97,25 +97,29 @@ io.on('connection', (socket) => {
     });
     
     socket.on('training_data', async (data) => {
-        if (data.id){
-            const plot = await Plot.findById(data.id);
+        if (data.id) {
             const { train_acc, val_acc, loss, val_loss, max_epochs, id } = data;
-            if (plot){
-                plot.train_acc = train_acc;
-                plot.val_acc = val_acc;
-                plot.loss = loss;
-                plot.val_loss = val_loss;
-                plot.max_epochs = max_epochs;
-                const pngBinaryAcc = await generate_base64(0, max_epochs, { train_acc, val_acc})
-                const pngBinaryLoss = await generate_base64(1, max_epochs, { loss, val_loss})
-                plot.plot_acc = pngBinaryAcc;
-                plot.plot_loss = pngBinaryLoss;
-                console.log("plots created")
-                await plot.save();
+            const pngBinaryAcc = await generate_base64(0, max_epochs, { train_acc, val_acc });
+            const pngBinaryLoss = await generate_base64(1, max_epochs, { loss, val_loss });
+    
+            const updateData = {
+                train_acc,
+                val_acc,
+                loss,
+                val_loss,
+                max_epochs,
+                plot_acc: pngBinaryAcc,
+                plot_loss: pngBinaryLoss
+            };
+    
+            const plot = await Plot.findByIdAndUpdate(data.id, updateData, { new: true, useFindAndModify: false });
+    
+            if (plot) {
+                io.to(data.id).emit('update_chart', data);
             }
-            io.to(data.id).emit('update_chart', data );
         }
     });
+    
 
 });
 
