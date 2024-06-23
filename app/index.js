@@ -3,7 +3,7 @@ const { createServer } = require('node:http');
 const { Server } = require('socket.io');
 const { v4: uuidv4 } = require('uuid');
 const dotenv = require('dotenv');
-const dbMiddleware  = require('./middlewares/db_middleware.js');
+const { connectDB } = require('../database/database.js');
 const Plot = require('./models/plot.js');
 const generate_base64 = require('./lib/generate_base64.js');
 dotenv.config();
@@ -12,7 +12,7 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, { cors: { origin: process.env.CORS_ORIGIN } });
 
-app.use(dbMiddleware);
+
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -123,6 +123,16 @@ io.on('connection', (socket) => {
 
 });
 
-server.listen(process.env.PORT || 3000, () => {
-    console.log(`server running at ${process.env.PORT}`);
-});
+const startServer = async () => {
+  try {
+      await connectDB();
+      server.listen(process.env.PORT || 3000, () => {
+          console.log(`Server running at ${process.env.PORT || 3000}`);
+      });
+  } catch (error) {
+      console.error('Erro ao conectar ao banco de dados', error);
+      process.exit(1); // Encerra o processo com erro
+  }
+};
+
+startServer();
