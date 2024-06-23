@@ -107,9 +107,10 @@ io.on('connection', (socket) => {
                 plot.val_loss = val_loss;
                 plot.max_epochs = max_epochs;
                 const pngBinaryAcc = await generate_base64(0, max_epochs, { train_acc, val_acc})
-                const pngBinaryLoss = await generate_base64(0, max_epochs, { loss, val_loss})
+                const pngBinaryLoss = await generate_base64(1, max_epochs, { loss, val_loss})
                 plot.plot_acc = pngBinaryAcc;
                 plot.plot_loss = pngBinaryLoss;
+                console.log("plots created")
                 await plot.save();
             }
             io.to(data.id).emit('update_chart', data );
