@@ -3,7 +3,7 @@ const { createServer } = require('node:http');
 const { Server } = require('socket.io');
 const { v4: uuidv4 } = require('uuid');
 const dotenv = require('dotenv');
-const { connectDB } = require('../database/database.js');
+const { connectDB } = require('./database/database.js');
 const Plot = require('./models/plot.js');
 const generate_base64 = require('./lib/generate_base64.js');
 dotenv.config();
